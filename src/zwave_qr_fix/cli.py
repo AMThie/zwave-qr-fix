@@ -1,4 +1,5 @@
 """Command-line interface for zwave-qr-fix."""
+
 from __future__ import annotations
 
 import argparse
@@ -17,6 +18,7 @@ def read_from_image(path: str) -> str:
         sys.exit("Image input needs: pip install zxing-cpp pillow (and pillow-heif for .heic)")
     try:
         import pillow_heif
+
         pillow_heif.register_heif_opener()
     except ImportError:
         pass
@@ -77,4 +79,3 @@ def main(argv: list[str] | None = None) -> int:
         write_png(fixed, args.png)
         print(f"PNG written to {args.png}")
     return 0
-

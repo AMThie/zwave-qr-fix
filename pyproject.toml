@@ -64,8 +64,9 @@ Changelog = "https://github.com/AMThie/zwave-qr-fix/blob/main/CHANGELOG.md"
 # Development-only dependencies (PEP 735). Unlike extras, they are not part
 # of the published package metadata. Install with: pip install --group dev
 [dependency-groups]
-test = ["pytest>=8"]
-dev = [{ include-group = "test" }]
+test = ["pytest>=8", "pytest-cov>=5"]
+lint = ["ruff>=0.6", "mypy>=1.11", "pytest>=8"]
+dev = [{ include-group = "test" }, { include-group = "lint" }, "pre-commit>=3"]
 
 [tool.hatch.version]
 path = "src/zwave_qr_fix/_version.py"
@@ -79,3 +80,44 @@ include = ["src", "tests", "CHANGELOG.md", "README.md", "LICENSE"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = ["-ra", "--strict-markers", "--strict-config"]
+
+[tool.ruff]
+# Lint against the oldest supported Python, not the one ruff runs on.
+target-version = "py39"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+  "E", "W",  # pycodestyle
+  "F",       # pyflakes
+  "I",       # isort
+  "B",       # flake8-bugbear: likely bugs
+  "UP",      # pyupgrade: modern syntax for the target version
+  "SIM",     # flake8-simplify
+  "C4",      # flake8-comprehensions
+  "PT",      # flake8-pytest-style
+  "RUF",     # ruff-specific rules
+]
+ignore = [
+  "RUF001", "RUF002", "RUF003",  # en dashes and ✓/✗ in output are intentional
+]
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
+files = ["src", "tests"]
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+# Optional runtime dependencies without type information
+module = ["zxingcpp", "PIL", "PIL.*", "pillow_heif", "qrcode", "qrcode.*"]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["zwave_qr_fix"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = ["if __name__ == .__main__.:"]
