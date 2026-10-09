@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import io
 import re
 import sys
 
@@ -36,6 +37,17 @@ def write_png(data: str, path: str) -> None:
     qrcode.make(data, box_size=12, border=4).save(path)
 
 
+def _tolerate_unencodable_output() -> None:
+    """Print '?' instead of crashing when stdout cannot encode ✓/✗/•.
+
+    This happens on Windows when the output is redirected to a file or pipe,
+    because Python then uses the ANSI code page (e.g. cp1252) instead of UTF-8.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        if isinstance(stream, io.TextIOWrapper):
+            stream.reconfigure(errors="replace")
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
         prog="zwave-qr-fix", description="Repair malformed Z-Wave SmartStart QR codes."
@@ -49,6 +61,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("-o", "--png", help="write the repaired QR code to this PNG file")
     ap.add_argument("--check", action="store_true", help="only validate, don't repair")
     args = ap.parse_args(argv)
+    _tolerate_unencodable_output()
 
     raw = read_from_image(args.image) if args.image else args.code
     print(f"Input:  {raw}\n")
