@@ -1,0 +1,80 @@
+name: Affected device
+description: Report a device whose SmartStart QR code is rejected, for DEVICES.md.
+labels: [device]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! Your report helps others find out whether their device is affected.
+
+        > [!CAUTION]
+        > **Do not post your real DSK, PIN or complete QR code string.**
+        > Mask it like `xxxxx-xxxxx-…` or `9001xxxxx…`.
+
+  - type: input
+    id: manufacturer
+    attributes:
+      label: Manufacturer
+      placeholder: Heatit
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: Model
+      placeholder: Z-TRM6
+    validations:
+      required: true
+
+  - type: input
+    id: article
+    attributes:
+      label: Article number / EAN
+      description: As printed on the box or label, if available.
+      placeholder: "Art. no. 54 305 68, EAN 7071236018087"
+
+  - type: input
+    id: firmware
+    attributes:
+      label: Firmware version
+      description: If known (e.g. from the Z-Wave JS UI device info).
+
+  - type: textarea
+    id: symptom
+    attributes:
+      label: Symptom
+      description: >-
+        The error message and the shape of the defect, e.g. "the string ends
+        in `.9999999999999`". **Masked**, never the full code.
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: fixed
+    attributes:
+      label: Did zwave-qr-fix produce a working code?
+      options:
+        - "Yes, the device was included with the repaired code"
+        - "No"
+        - "Not tried yet"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: manufacturer_status
+    attributes:
+      label: Manufacturer informed?
+      options:
+        - "Yes, they confirmed the defect"
+        - "Yes, no answer yet"
+        - "No"
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I have removed or masked every DSK, PIN and QR code string in this report.
+          required: true
