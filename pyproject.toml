@@ -1,0 +1,81 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "zwave-qr-fix"
+dynamic = ["version"]
+description = "Repair malformed Z-Wave SmartStart QR codes that Z-Wave JS rejects (ZW1406), e.g. on Heatit Z-TRM6 thermostats."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Antonio Thiers" }]
+keywords = [
+  "z-wave",
+  "zwave",
+  "smartstart",
+  "qr-code",
+  "home-assistant",
+  "zwave-js",
+  "s2",
+  "dsk",
+  "heatit",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: End Users/Desktop",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Home Automation",
+  "Topic :: Utilities",
+  "Typing :: Typed",
+]
+# The core logic only needs the standard library.
+dependencies = []
+
+[project.optional-dependencies]
+image = [
+  # zxing-cpp 3.x claims Python 3.9 support but ships no 3.9 wheels and
+  # cannot be built from source there, so stay on 2.x for Python 3.9.
+  "zxing-cpp>=2.2,<3; python_version < '3.10'",
+  "zxing-cpp>=2.2; python_version >= '3.10'",
+  "pillow>=9.1",
+  "pillow-heif>=0.16",
+]
+png = ["qrcode[pil]>=7.4"]
+all = ["zwave-qr-fix[image,png]"]
+
+[project.scripts]
+zwave-qr-fix = "zwave_qr_fix.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/AMThie/zwave-qr-fix"
+Issues = "https://github.com/AMThie/zwave-qr-fix/issues"
+Changelog = "https://github.com/AMThie/zwave-qr-fix/blob/main/CHANGELOG.md"
+
+# Development-only dependencies (PEP 735). Unlike extras, they are not part
+# of the published package metadata. Install with: pip install --group dev
+[dependency-groups]
+test = ["pytest>=8"]
+dev = [{ include-group = "test" }]
+
+[tool.hatch.version]
+path = "src/zwave_qr_fix/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/zwave_qr_fix"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "CHANGELOG.md", "README.md", "LICENSE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers", "--strict-config"]

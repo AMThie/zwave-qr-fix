@@ -43,9 +43,9 @@ and recomputes the checksum.
 ## Installation
 
 ```bash
-git clone https://github.com/AMThie/zwave-qr-fix.git
-cd zwave-qr-fix
-pip install -r requirements.txt   # optional: only for image input / PNG output
+pipx install "git+https://github.com/AMThie/zwave-qr-fix.git"
+# with image input and PNG output:
+pipx install "zwave-qr-fix[all] @ git+https://github.com/AMThie/zwave-qr-fix.git"
 ```
 
 The core logic has no dependencies and runs on Python 3.9+.
@@ -54,13 +54,13 @@ The core logic has no dependencies and runs on Python 3.9+.
 
 ```bash
 # Repair a string and cross-check it against the DSK printed on the label
-python3 zwave_qr_fix.py "9001...1010.9999999999999" --dsk 12345-12345-...
+zwave-qr-fix "9001...1010.9999999999999" --dsk 12345-12345-...
 
 # Read straight from a photo of the label (jpg/png/heic) and write a PNG
-python3 zwave_qr_fix.py --image label.heic -o fixed.png
+zwave-qr-fix --image label.heic -o fixed.png
 
 # Only validate, don't repair
-python3 zwave_qr_fix.py --check "9001..."
+zwave-qr-fix --check "9001..."
 ```
 
 Then scan `fixed.png` in the Home Assistant Companion app
