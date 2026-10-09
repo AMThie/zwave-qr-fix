@@ -103,6 +103,10 @@ ignore = [
   "RUF001", "RUF002", "RUF003",  # en dashes and ✓/✗ in output are intentional
 ]
 
+[tool.ruff.lint.per-file-ignores]
+# Tests contain complete 90-digit QR strings and exact CLI output.
+"tests/**" = ["E501"]
+
 [tool.mypy]
 python_version = "3.9"
 strict = true

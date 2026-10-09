@@ -24,7 +24,7 @@ def read_from_image(path: str) -> str:
         pass
     for r in zxingcpp.read_barcodes(Image.open(path)):
         if r.text.startswith(LEAD_IN):
-            return r.text
+            return str(r.text)
     sys.exit(f"No Z-Wave QR code found in {path}")
 
 
