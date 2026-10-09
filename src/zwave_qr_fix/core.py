@@ -12,6 +12,7 @@ the SHA-1 checksum. It only uses the standard library.
 The DSK is never changed – it is the only field the controller needs to
 securely identify and include the device.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -86,7 +87,7 @@ class SmartStartCode:
     # ---------- pretty ----------
     @property
     def dsk_formatted(self) -> str:
-        return "-".join(self.dsk[i:i + 5] for i in range(0, 40, 5))
+        return "-".join(self.dsk[i : i + 5] for i in range(0, 40, 5))
 
     @property
     def pin(self) -> str:
@@ -104,18 +105,24 @@ class SmartStartCode:
             v = t.value
             if t.type == 0 and len(v) == 10:
                 dc, icon = int(v[:5]), int(v[5:])
-                lines.append(f"{name}:      generic 0x{dc >> 8:02X}, specific 0x{dc & 0xFF:02X}, icon 0x{icon:04X}")
+                lines.append(
+                    f"{name}:      generic 0x{dc >> 8:02X}, specific 0x{dc & 0xFF:02X}, icon 0x{icon:04X}"
+                )
             elif t.type == 1 and len(v) == 20:
-                m, pt, pid, av = (int(v[i:i + 5]) for i in range(0, 20, 5))
-                lines.append(f"{name}:        manufacturer 0x{m:04X}, type 0x{pt:04X}, id 0x{pid:04X}, "
-                             f"app version {av >> 8}.{av & 0xFF}")
+                m, pt, pid, av = (int(v[i : i + 5]) for i in range(0, 20, 5))
+                lines.append(
+                    f"{name}:        manufacturer 0x{m:04X}, type 0x{pt:04X}, id 0x{pid:04X}, "
+                    f"app version {av >> 8}.{av & 0xFF}"
+                )
             else:
                 lines.append(f"{name}: {v}")
         return lines
 
 
 # ---------- parsing ----------
-def parse(raw: str, repair: bool = False, app_version: str | None = None) -> tuple[SmartStartCode, list[str]]:
+def parse(
+    raw: str, repair: bool = False, app_version: str | None = None
+) -> tuple[SmartStartCode, list[str]]:
     """Parse a SmartStart string. With repair=True, fix known defects instead of failing."""
     notes: list[str] = []
     s = raw.strip()
@@ -124,8 +131,8 @@ def parse(raw: str, repair: bool = False, app_version: str | None = None) -> tup
     if bad:
         if not repair:
             raise QRError(f"invalid character {bad.group()!r} at position {bad.start()}")
-        notes.append(f"Removed garbage starting at position {bad.start()}: {s[bad.start():]!r}")
-        s = s[:bad.start()]
+        notes.append(f"Removed garbage starting at position {bad.start()}: {s[bad.start() :]!r}")
+        s = s[: bad.start()]
 
     if len(s) < HEADER_LEN:
         raise QRError(f"too short ({len(s)} digits, need at least {HEADER_LEN})")
@@ -139,8 +146,8 @@ def parse(raw: str, repair: bool = False, app_version: str | None = None) -> tup
     keys = int(s[9:12])
     dsk = s[12:52]
     for i in range(0, 40, 5):
-        if int(dsk[i:i + 5]) > 65535:
-            raise QRError(f"DSK block {i // 5 + 1} out of range: {dsk[i:i + 5]}")
+        if int(dsk[i : i + 5]) > 65535:
+            raise QRError(f"DSK block {i // 5 + 1} out of range: {dsk[i : i + 5]}")
 
     tlvs: list[TLV] = []
     rest = s[52:]
@@ -158,7 +165,9 @@ def parse(raw: str, repair: bool = False, app_version: str | None = None) -> tup
             if not repair:
                 raise QRError(f"{name} truncated: expected {length} digits, got {len(value)}")
             if t_type == 1:
-                notes.append(f"{name} truncated ({len(value)}/{length} digits) – rebuilding application version")
+                notes.append(
+                    f"{name} truncated ({len(value)}/{length} digits) – rebuilding application version"
+                )
                 value = value.ljust(15, "0")[:15] + value[15:].zfill(5)
             elif t_type in TLV_FIXED_LEN:
                 notes.append(f"{name} truncated – zero-padding")
@@ -172,7 +181,9 @@ def parse(raw: str, repair: bool = False, app_version: str | None = None) -> tup
 
     if not code.checksum_ok():
         if not repair:
-            raise QRError(f"checksum mismatch (label: {checksum}, computed: {code.compute_checksum(code.body())})")
+            raise QRError(
+                f"checksum mismatch (label: {checksum}, computed: {code.compute_checksum(code.body())})"
+            )
         notes.append(f"Checksum recomputed: {checksum} -> {code.compute_checksum(code.body())}")
 
     if app_version is not None:
