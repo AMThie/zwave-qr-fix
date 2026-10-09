@@ -65,7 +65,14 @@ Changelog = "https://github.com/AMThie/zwave-qr-fix/blob/main/CHANGELOG.md"
 # of the published package metadata. Install with: pip install --group dev
 [dependency-groups]
 test = ["pytest>=8", "pytest-cov>=5"]
-lint = ["ruff>=0.6", "mypy>=1.11", "pytest>=8"]
+lint = [
+  "ruff>=0.6",
+  # mypy 2.x dropped python_version = "3.9"; lift this with the 3.9 minimum.
+  "mypy>=1.11,<2",
+  # Only needed so mypy can check the tests. pytest 9 uses match statements,
+  # which mypy rejects when targeting Python 3.9.
+  "pytest>=8,<9",
+]
 dev = [{ include-group = "test" }, { include-group = "lint" }, "pre-commit>=3"]
 
 [tool.hatch.version]
@@ -110,7 +117,8 @@ ignore = [
 [tool.mypy]
 python_version = "3.9"
 strict = true
-files = ["src", "tests"]
+files = ["src", "tests", "scripts"]
+mypy_path = "src"
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
