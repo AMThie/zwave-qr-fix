@@ -117,7 +117,7 @@ ignore = [
 [tool.mypy]
 python_version = "3.9"
 strict = true
-files = ["src", "tests", "scripts"]
+files = ["src", "tests", "scripts", "crosscheck"]
 mypy_path = "src"
 warn_unreachable = true
 

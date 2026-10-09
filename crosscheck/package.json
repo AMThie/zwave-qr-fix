@@ -1,0 +1,15 @@
+{
+  "name": "zwave-qr-fix-crosscheck",
+  "private": true,
+  "description": "Validates zwave-qr-fix output against the Z-Wave JS QR code parser",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "crosscheck": "node crosscheck.mjs vectors.json"
+  },
+  "dependencies": {
+    "@zwave-js/core": "^15.29.0"
+  }
+}
