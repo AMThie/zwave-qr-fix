@@ -94,9 +94,13 @@ class SmartStartCode:
         return self.dsk[:5]
 
     def describe(self) -> list[str]:
+        kind = "SmartStart" if self.version == 1 else "S2 only"
+        classes = ", ".join(
+            SECURITY_CLASSES.get(b, f"bit {b}") for b in range(8) if self.keys >> b & 1
+        )
         lines = [
-            f"Version:          {self.version} ({'SmartStart' if self.version == 1 else 'S2 only'})",
-            f"Security classes: {', '.join(SECURITY_CLASSES.get(b, f'bit {b}') for b in range(8) if self.keys >> b & 1)}",
+            f"Version:          {self.version} ({kind})",
+            f"Security classes: {classes}",
             f"DSK:              {self.dsk_formatted}",
             f"PIN:              {self.pin}",
         ]
@@ -106,7 +110,8 @@ class SmartStartCode:
             if t.type == 0 and len(v) == 10:
                 dc, icon = int(v[:5]), int(v[5:])
                 lines.append(
-                    f"{name}:      generic 0x{dc >> 8:02X}, specific 0x{dc & 0xFF:02X}, icon 0x{icon:04X}"
+                    f"{name}:      generic 0x{dc >> 8:02X}, specific 0x{dc & 0xFF:02X}, "
+                    f"icon 0x{icon:04X}"
                 )
             elif t.type == 1 and len(v) == 20:
                 m, pt, pid, av = (int(v[i : i + 5]) for i in range(0, 20, 5))
@@ -166,7 +171,8 @@ def parse(
                 raise QRError(f"{name} truncated: expected {length} digits, got {len(value)}")
             if t_type == 1:
                 notes.append(
-                    f"{name} truncated ({len(value)}/{length} digits) – rebuilding application version"
+                    f"{name} truncated ({len(value)}/{length} digits) – "
+                    "rebuilding application version"
                 )
                 value = value.ljust(15, "0")[:15] + value[15:].zfill(5)
             elif t_type in TLV_FIXED_LEN:
@@ -180,11 +186,10 @@ def parse(
     code = SmartStartCode(version, checksum, keys, dsk, tlvs)
 
     if not code.checksum_ok():
+        computed = code.compute_checksum(code.body())
         if not repair:
-            raise QRError(
-                f"checksum mismatch (label: {checksum}, computed: {code.compute_checksum(code.body())})"
-            )
-        notes.append(f"Checksum recomputed: {checksum} -> {code.compute_checksum(code.body())}")
+            raise QRError(f"checksum mismatch (label: {checksum}, computed: {computed})")
+        notes.append(f"Checksum recomputed: {checksum} -> {computed}")
 
     if app_version is not None:
         major, _, minor = app_version.partition(".")
