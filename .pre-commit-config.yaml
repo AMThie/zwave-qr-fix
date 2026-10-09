@@ -1,0 +1,38 @@
+# Install once with:  pre-commit install
+# Run on everything:  pre-commit run --all-files
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-toml
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.10
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    # mypy 2.x can no longer type-check for Python 3.9 (our minimum).
+    rev: v1.19.1
+    hooks:
+      - id: mypy
+        # Check the whole project as configured in pyproject.toml,
+        # not only the staged files.
+        pass_filenames: false
+        # pytest 9 uses syntax mypy rejects when targeting Python 3.9
+        additional_dependencies: ["pytest>=8,<9"]
+
+  - repo: local
+    hooks:
+      - id: synthetic-dsk-only
+        name: refuse real-looking DSKs
+        entry: python scripts/check_synthetic_dsk.py
+        language: python
+        types: [text]
