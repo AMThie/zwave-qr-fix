@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security problem
+    url: https://github.com/AMThie/zwave-qr-fix/security/advisories/new
+    about: Report security issues privately, not in a public issue.
+  - name: General Z-Wave / Home Assistant help
+    url: https://community.home-assistant.io/
+    about: For inclusion problems that are not about malformed QR codes.

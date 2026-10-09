@@ -1,0 +1,72 @@
+name: Bug report
+description: The tool fails, crashes or produces a code that does not work.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!CAUTION]
+        > **Do not post your real DSK, PIN or complete QR code string.**
+        > The DSK is part of your device's S2 security and this issue is public.
+        > Mask it like `xxxxx-xxxxx-…` or `9001xxxxx…`. The *shape* of the
+        > problem (e.g. "the string ends in `.9999999999999`") is enough.
+
+  - type: input
+    id: manufacturer
+    attributes:
+      label: Manufacturer
+      placeholder: Heatit
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device / model
+      description: Model name, and article number or EAN if printed on the label.
+      placeholder: "Z-TRM6, Art. no. 54 305 68, EAN 7071236018087"
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error message
+      description: >-
+        The exact error from Home Assistant / Z-Wave JS and/or the output of
+        `zwave-qr-fix`. **Mask the DSK and any QR code string before pasting.**
+      render: text
+      placeholder: "Invalid QR code: contains invalid characters (ZW1406)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: What did you do and what happened?
+      description: The command you ran (with the code masked) and what you expected instead.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: zwave-qr-fix version
+      description: Output of `zwave-qr-fix --version`.
+      placeholder: zwave-qr-fix 0.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Operating system and Python version
+      placeholder: "Windows 11, Python 3.12"
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I have removed or masked every DSK, PIN and QR code string in this report.
+          required: true
