@@ -43,7 +43,7 @@ and recomputes the checksum.
 ## Installation
 
 ```bash
-git clone https://github.com/<you>/zwave-qr-fix.git
+git clone https://github.com/AMThie/zwave-qr-fix.git
 cd zwave-qr-fix
 pip install -r requirements.txt   # optional: only for image input / PNG output
 ```
