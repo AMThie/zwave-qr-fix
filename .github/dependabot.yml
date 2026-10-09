@@ -1,0 +1,29 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      python:
+        patterns: ["*"]
+    ignore:
+      # mypy 2.x and pytest 9.x cannot check code for Python 3.9 (our
+      # minimum). Drop these entries together with Python 3.9 support.
+      - dependency-name: mypy
+        versions: [">=2"]
+      - dependency-name: pytest
+        versions: [">=9"]
+
+  - package-ecosystem: npm
+    directory: /crosscheck
+    schedule:
+      interval: monthly
