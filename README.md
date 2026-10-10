@@ -1,11 +1,9 @@
 # zwave-qr-fix
 
 [![CI](https://github.com/AMThie/zwave-qr-fix/actions/workflows/ci.yml/badge.svg)](https://github.com/AMThie/zwave-qr-fix/actions/workflows/ci.yml)
-[![Python 3.9–3.13](https://img.shields.io/badge/python-3.9%E2%80%933.13-blue)](https://github.com/AMThie/zwave-qr-fix/blob/main/pyproject.toml)
-[![License: MIT](https://img.shields.io/github/license/AMThie/zwave-qr-fix)](https://github.com/AMThie/zwave-qr-fix/blob/main/LICENSE)
-<!-- After the first PyPI release:
 [![PyPI](https://img.shields.io/pypi/v/zwave-qr-fix)](https://pypi.org/project/zwave-qr-fix/)
--->
+[![Python versions](https://img.shields.io/pypi/pyversions/zwave-qr-fix)](https://pypi.org/project/zwave-qr-fix/)
+[![License: MIT](https://img.shields.io/github/license/AMThie/zwave-qr-fix)](https://github.com/AMThie/zwave-qr-fix/blob/main/LICENSE)
 
 Repair malformed **Z-Wave SmartStart QR codes** that Z-Wave JS / Home Assistant rejects with
 
@@ -23,7 +21,7 @@ You came from the Home Assistant forum and your device won't pair? Here's the fi
 1. **Install** with [pipx](https://pipx.pypa.io/) (keeps the tool isolated from your system Python):
 
    ```bash
-   pipx install "zwave-qr-fix[all] @ git+https://github.com/AMThie/zwave-qr-fix.git"
+   pipx install "zwave-qr-fix[all]"
    ```
 
 2. **Repair the code.** Take a photo of the QR label (jpg, png or iPhone heic) and run the
@@ -66,10 +64,13 @@ Fixed:  900157552003123452345634567456785678965535101012020200100205404608022000
 
 ```bash
 # core only: repair strings you pass on the command line
-pipx install "git+https://github.com/AMThie/zwave-qr-fix.git"
+pipx install zwave-qr-fix
 
 # with image input (--image) and PNG output (-o)
-pipx install "zwave-qr-fix[all] @ git+https://github.com/AMThie/zwave-qr-fix.git"
+pipx install "zwave-qr-fix[all]"
+
+# upgrade later
+pipx upgrade zwave-qr-fix
 ```
 
 Plain `pip install` works the same way. The core has **no dependencies** and runs on
