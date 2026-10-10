@@ -103,3 +103,24 @@ jobs:
         run: |
           python -m pip install dist/*.whl
           zwave-qr-fix --version
+
+  # Single status check for the branch ruleset. Without `if: always()` this
+  # job would be *skipped* when a needed job fails, and GitHub treats a
+  # skipped required check as passing.
+  all-green:
+    name: All checks passed
+    if: always()
+    needs: [lint, test, crosscheck, package]
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Fail unless every job succeeded
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Job results: $RESULTS"
+          for result in $RESULTS; do
+            if [ "$result" != "success" ]; then
+              exit 1
+            fi
+          done
