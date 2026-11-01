@@ -10,6 +10,6 @@
     "crosscheck": "node crosscheck.mjs vectors.json"
   },
   "dependencies": {
-    "@zwave-js/core": "^15.29.0"
+    "@zwave-js/core": "^15.31.2"
   }
 }
